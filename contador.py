@@ -68,8 +68,7 @@ cuerpo_mensaje = (
     f"• Multidisciplinario (todas las carreras aportan)\n\n"
     f"🔗 **Enlaces:**\n"
     f"👉 [Haz clic aquí para inscribirte]({URL_INSCRIPCION})\n"
-    f"ℹ️ [Sitio web oficial, retos y recursos]({URL_WEB})\n"
-    f"────────────────────────────────"
+    f"ℹ️ [Sitio web oficial, retos y recursos]({URL_WEB})"
 )
 
 payload = {
