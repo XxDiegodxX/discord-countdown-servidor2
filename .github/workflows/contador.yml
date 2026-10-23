@@ -1,0 +1,29 @@
+name: Contador Diario
+
+on:
+  workflow_dispatch:
+  schedule:
+    # 14:17 UTC equivale a las 10:17 AM hora de Venezuela
+    - cron: '17 14 * * *'
+
+jobs:
+  ejecutar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout del repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Instalar dependencias
+        run: |
+          pip install requests
+
+      - name: Ejecutar script
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        run: |
+          python contador.py
