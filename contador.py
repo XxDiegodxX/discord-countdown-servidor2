@@ -66,9 +66,9 @@ cuerpo_mensaje = (
     f"• Fondo de ayuda para conexión\n"
     f"• No requieres equipo previo\n"
     f"• Multidisciplinario (todas las carreras aportan)\n\n"
-    f"🔗 **Enlaces:**\n"
-    f"👉 [Haz clic aquí para inscribirte]({URL_INSCRIPCION})\n"
-    f"ℹ️ [Sitio web oficial, retos y recursos]({URL_WEB})"
+    f"🔗 **Enlaces importantes:**\n"
+    f"📝 **Inscripciones:** Completa tu registro en el [Formulario Oficial de Postulación]({URL_INSCRIPCION})\n"
+    f"🌐 **Portal oficial:** Conoce las bases, retos y cronograma en [coafina.org]({URL_WEB})"
 )
 
 payload = {
