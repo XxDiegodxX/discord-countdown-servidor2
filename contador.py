@@ -17,9 +17,6 @@ NOMBRE_EVENTO = "Hackathon CoAfina 2026"
 URL_INSCRIPCION = "https://forms.gle/5rfQqd1ubkmYUaSC8"
 URL_WEB = "https://laa-hecap.github.io/coafina"
 
-# Ruta local de tu imagen en el repositorio
-RUTA_IMAGEN = os.path.join("imagenes", "imagen de prueba 1.png")
-
 # 3. Cálculo de tiempos
 ahora = datetime.now()
 diferencia = FECHA_EVENTO - ahora
@@ -30,28 +27,23 @@ horas_restantes = int((segundos_restantes % 86400) // 3600)
 timestamp_evento = int(FECHA_EVENTO.timestamp())
 timestamp_inscripcion = int(FECHA_CIERRE_INSCRIPCIONES.timestamp())
 
-# 4. Estado y encabezados
+# Si el evento ya terminó o comenzó, el script se detiene de inmediato sin enviar nada a Discord
+if segundos_restantes <= 0:
+    print("El evento ya inició o concluyó. No se envía ningún mensaje.")
+    sys.exit(0)
+
+# 4. Estado y encabezados para la cuenta regresiva
 if dias_restantes > 1:
     cabecera = f"⏳ **¡CUENTA REGRESIVA — {NOMBRE_EVENTO}!**"
     tiempo_texto = f"Faltan **{dias_restantes} días y {horas_restantes:02d} horas**"
-    color = 0x00A896
 elif dias_restantes == 1:
     cabecera = f"🚨 **¡ATENCIÓN! SOLO QUEDA 1 DÍA — {NOMBRE_EVENTO}**"
     tiempo_texto = f"Faltan **1 día y {horas_restantes:02d} horas**"
-    color = 0xF39C12
-elif dias_restantes == 0 and segundos_restantes > 0:
+else:  # dias_restantes == 0 y segundos_restantes > 0
     cabecera = f"🔥 **¡HOY ES EL GRAN DÍA — {NOMBRE_EVENTO}!**"
     tiempo_texto = f"Inicia en aproximadamente **{horas_restantes} horas**"
-    color = 0xE74C3C
-elif 0 >= segundos_restantes > -86400:
-    cabecera = f"🎉 **¡EL EVENTO COMENZÓ — {NOMBRE_EVENTO}!**"
-    tiempo_texto = "¡El Hackathon ya está en marcha!"
-    color = 0x2ECC71
-else:
-    print("El evento ya concluyó.")
-    sys.exit(0)
 
-# 5. Mensaje de texto formateado (Garantiza diseño elegante aún sin embeds)
+# 5. Mensaje de texto formateado (URLs con <> para suprimir previsualizaciones)
 cuerpo_mensaje = (
     f"# {cabecera}\n\n"
     f"🗓️ **Tiempo restante:** {tiempo_texto} ⏳\n"
@@ -67,24 +59,19 @@ cuerpo_mensaje = (
     f"• No requieres equipo previo\n"
     f"• Multidisciplinario (todas las carreras aportan)\n\n"
     f"🔗 **Enlaces importantes:**\n"
-    f"📝 **Inscripciones:** Completa tu registro en el [Formulario Oficial de Postulación]({URL_INSCRIPCION})\n"
-    f"🌐 **Portal oficial:** Conoce las bases, retos y cronograma en [coafina.org]({URL_WEB})"
+    f"👉 [Haz clic aquí para inscribirte como Participante Hacker](<{URL_INSCRIPCION}>)\n"
+    f"ℹ️ [Sitio web, retos y recursos del Hackathon CoAfina](<{URL_WEB}>)"
 )
 
+# 6. Envío exclusivo de texto plano
 payload = {
-    "username": "CoAfina Bot",
     "content": cuerpo_mensaje
 }
 
-# 6. Envío con la imagen adjunta nativamente
-if os.path.exists(RUTA_IMAGEN):
-    with open(RUTA_IMAGEN, "rb") as f:
-        archivos = {"file": ("banner.png", f, "image/png")}
-        r = requests.post(WEBHOOK_URL, data=payload, files=archivos)
-else:
-    r = requests.post(WEBHOOK_URL, json=payload)
+r = requests.post(WEBHOOK_URL, json=payload)
 
 if r.status_code in (200, 204):
     print("Mensaje enviado exitosamente a Discord.")
 else:
     print(f"Error {r.status_code}: {r.text}")
+    sys.exit(1)
