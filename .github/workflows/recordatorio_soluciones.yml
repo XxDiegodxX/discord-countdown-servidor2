@@ -1,0 +1,27 @@
+name: Recordatorio Entrega Soluciones
+
+on:
+  schedule:
+    # Ejemplo: Corre diario a las 18:00 UTC (14:00 hora de Venezuela)
+    - cron: '0 18 * * *'
+  workflow_dispatch: # Permite probarlo manualmente cuando quieras
+
+jobs:
+  enviar_recordatorio:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Instalar dependencias
+        run: pip install requests
+
+      - name: Ejecutar script de soluciones
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        run: python recordatorio_soluciones.py
